@@ -31,3 +31,10 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
     step %{I #{uncheck}check "ratings[#{rating}]"}
   end
 end
+
+Then /I should see (all|none) of the movies/ do |range|
+  expected = (range=="all") ? Movie.all.size : 0
+  # We expect one row for the header.
+  expected += 1
+  assert page.has_css?("table#movies tr", :count => expected)
+end
