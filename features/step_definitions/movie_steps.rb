@@ -14,7 +14,15 @@ end
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.content  is the entire content of the page as a string.
-  assert false, "Unimplmemented"
+  # Make sure we know how many table columns we're dealing with.
+  header = page.find(:xpath, "//table[@id='movies']//tr").text
+  cols = header.split("\n").size
+  # Grab the titles out of the table.
+  table = page.find("table#movies").text
+  titles = table.split("\n").
+    select.with_index { |_,i| i%cols==0}.
+    drop(1)
+  assert titles.index(e1) < titles.index(e2)
 end
 
 # Make it easier to express checking or unchecking several boxes at once
